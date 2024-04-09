@@ -1,6 +1,9 @@
+import java.awt.image.BufferedImage;
 import java.io.*;
 import java.net.*;
 import java.util.*;
+
+import javax.imageio.ImageIO;
 
 public class Client {
   public static void main(String[] args) throws UnknownHostException, IOException {
@@ -45,4 +48,22 @@ public class Client {
     String response = scanner.nextLine();
     out.println(response);
   }
+
+  public static void uploadImageClient(Socket socket, String nameImage) {
+    try {
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        out.println(nameImage);
+
+        BufferedImage image = ImageIO.read(new File("src/" + nameImage + ".png"));
+        ByteArrayOutputStream arrayImage = new ByteArrayOutputStream();
+        ImageIO.write(image, "png", arrayImage);
+
+        OutputStream outputStream = socket.getOutputStream();
+        outputStream.write(arrayImage.toByteArray());
+
+        System.out.println("Imagem enviada para o servidor com o nome: " + nameImage);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 }
