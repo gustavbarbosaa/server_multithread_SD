@@ -90,5 +90,20 @@ public class Client {
     } catch (IOException e) {
         e.printStackTrace();
     }
+  }
+
+  public static void deleteImageClient(Socket socket, String nameImage) {
+    try {
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        
+        BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+        out.println(nameImage); 
+
+        String response = in.readLine();
+        System.out.println(response);
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 }
 }
