@@ -65,5 +65,30 @@ public class Client {
     } catch (IOException e) {
         e.printStackTrace();
     }
+  }
+
+  public static void downloadImageClient(Socket socket, String nameImage) {
+    try {
+        PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
+        out.println(nameImage);
+
+        DataInputStream in = new DataInputStream(socket.getInputStream());
+
+        int imageSize = in.readInt();
+
+        if (imageSize != -1) {
+            byte[] imageData = new byte[imageSize];
+            in.readFully(imageData);
+
+            BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
+            File path = new File(nameImage + ".png");
+            ImageIO.write(image, "png", path);
+            System.out.println("Imagem salva como: " + path.getAbsolutePath());
+        } else {
+            System.out.println("Imagem não encontrada.");
+        }
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
 }
 }
