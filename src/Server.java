@@ -1,5 +1,10 @@
 import java.io.*;
 import java.net.*;
+import java.awt.image.BufferedImage;
+import javax.imageio.ImageIO;
+
+import DAO.ImageDAO;
+import model.Image;
 
 public class Server implements Runnable {
   public Socket client;
@@ -61,6 +66,9 @@ public class Server implements Runnable {
   }
 
   private void verifyResponse(String msg, Socket client) {
+  
+  
+  
     switch (msg) {
       case "1 - Download":
         System.out.println("download");
@@ -76,4 +84,35 @@ public class Server implements Runnable {
         break;
     }
   }
+
+  private void uploadServer(Socket socket) {
+    try {
+      BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+      String imageName = in.readLine();
+
+      if (imageName != null && !imageName.isEmpty()) {
+        BufferedImage image = ImageIO.read(socket.getInputStream());
+
+        if (image != null) {
+          ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+          ImageIO.write(image, "png", byteArrayOutputStream);
+          byte[] imageData = byteArrayOutputStream.toByteArray();
+
+          ImageDAO imageDAO = new ImageDAO();
+          imageDAO.uploadImage(new Image(imageName, imageData));
+
+          File path = new File("imagem_" + System.currentTimeMillis() + ".png");
+          ImageIO.write(image, "png", path);
+          System.out.println("Imagem salva como: " + path.getAbsolutePath());
+      } else {
+          System.out.println("Imagem recebida é nula ou inválida.");
+      }
+      } else {
+        System.out.println("Nome da imagem recebido é nulo ou vazio!");
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
 }
+
