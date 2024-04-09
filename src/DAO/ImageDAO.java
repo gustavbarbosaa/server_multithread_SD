@@ -3,6 +3,7 @@ package DAO;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 
@@ -59,5 +60,21 @@ public class ImageDAO {
       e.printStackTrace();
       return false;
     }
+  }
+
+  public ArrayList<String> getAllImages() {
+    ArrayList<String> imageNames = new ArrayList<>();
+    String sql = "SELECT name_image FROM images";
+
+    try(PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql)) {
+      ResultSet resultSet = preparedStatement.executeQuery();
+      while (resultSet.next()) {
+          String name = resultSet.getString("name_image");
+          imageNames.add(name);
+      }
+    } catch (SQLException e) {
+      e.printStackTrace();
+    }
+    return imageNames;
   }
 }
