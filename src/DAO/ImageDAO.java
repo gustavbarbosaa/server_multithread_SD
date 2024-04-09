@@ -47,4 +47,17 @@ public class ImageDAO {
 
     return null;
   }
+
+  public boolean deleteImage(String imageName) {
+    String sql = "DELETE FROM images WHERE name_image = ?";
+
+    try (PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql)) {
+      preparedStatement.setString(1, imageName);
+      int rowsAffected = preparedStatement.executeUpdate();
+      return rowsAffected > 0;
+    } catch (SQLException e) {
+      e.printStackTrace();
+      return false;
+    }
+  }
 }
