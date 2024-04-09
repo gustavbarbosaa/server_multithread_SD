@@ -173,7 +173,7 @@ public class Server implements Runnable {
       imageName = in.readLine();
       System.out.println("Nome da imagem recebido: " + imageName);
 
-      String imagePath = "C:\\Users\\NETLINE-DEV\\Documents\\pessoal\\projetos\\sockets_multithread\\multithread\\" + imageName + ".png";
+      String imagePath = "C:\\Users\\NETLINE-DEV\\Documents\\pessoal\\projetos\\app_multithread\\" + imageName + ".png";
       System.out.println("caminho da imagem: " + imagePath);
       File imageFile = new File(imagePath);
 
