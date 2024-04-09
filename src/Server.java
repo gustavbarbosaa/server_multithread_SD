@@ -24,6 +24,24 @@ public class Server implements Runnable {
   @Override
   public void run() {
     System.out.println("Cliente conectado: " + client.getInetAddress().getHostAddress());
+
+    try (PrintWriter out = new PrintWriter(client.getOutputStream(), true);
+          BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))
+        ) {
+
+          sendMessageClient(out);
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     throw new UnsupportedOperationException("Unimplemented method 'run'");
+  }
+
+  private void sendMessageClient(PrintWriter out) {
+    out.println("1 - Download");
+    out.println("2 - Upload");
+    out.println("3 - Delete");
+    out.println("Escolha uma das opcoes acima: ");
+    out.println("FIM");
   }
 }
