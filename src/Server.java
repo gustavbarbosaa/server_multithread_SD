@@ -80,14 +80,30 @@ public class Server implements Runnable {
   private void verifyResponse(String msg, Socket client) {
     switch (msg) {
       case "1 - Download":
-        System.out.println("download");
-        break;
+          try {
+            sendImageNames(new PrintWriter(client.getOutputStream(), true));
+
+            BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+            String imageName = in.readLine();
+
+            downloadServer(client, imageName);
+            break;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
       case "2 - Upload":
-        System.out.println("upload");
+        uploadServer(client);
         break;
       case "3 - Delete":
-        System.out.println("delete");
-        break;
+        try {
+          sendImageNames(new PrintWriter(client.getOutputStream(), true));
+          BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
+          String imageName = in.readLine();
+          deleteServer(client, imageName);
+          break;
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
       default:
         System.out.println("opcao invalida");
         break;
