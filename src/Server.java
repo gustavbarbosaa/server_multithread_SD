@@ -31,6 +31,22 @@ public class Server implements Runnable {
 
           sendMessageClient(out);
 
+          String msg = in.readLine();
+
+          if (msg.equals("1")) {
+            msg = "1 - Download";
+            out.println(msg);
+          } else if (msg.equals("2")) {
+            msg = "2 - Upload";
+            out.println(msg);
+          } else if (msg.equals("3")) {
+            msg = "3 - Delete";
+            out.println(msg);
+          }
+
+          System.out.println("Cliente -> " + msg);
+
+          verifyResponse(msg, client);
     } catch (IOException e) {
       e.printStackTrace();
     }
@@ -43,5 +59,22 @@ public class Server implements Runnable {
     out.println("3 - Delete");
     out.println("Escolha uma das opcoes acima: ");
     out.println("FIM");
+  }
+
+  private void verifyResponse(String msg, Socket client) {
+    switch (msg) {
+      case "1 - Download":
+        System.out.println("download");
+        break;
+      case "2 - Upload":
+        System.out.println("upload");
+        break;
+      case "3 - Delete":
+        System.out.println("delete");
+        break;
+      default:
+        System.out.println("opcao invalida");
+        break;
+    }
   }
 }
