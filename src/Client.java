@@ -19,6 +19,25 @@ public class Client {
     }
 
     sendResponseServer(out, scanner);
+
+    String choice = in.readLine();
+
+    switch (choice) {
+      case "1 - Download":
+        System.out.println("download");
+        break;
+      case "2 - Upload":
+        System.out.println("upload");
+        break;
+      case "3 - Delete":
+        System.out.println("delete");
+        break;
+      default:
+        System.out.println("opcao invalida");
+        break;
+    }
+
+    socket.close();
   }
 
   public static void sendResponseServer(PrintWriter out, Scanner scanner) {

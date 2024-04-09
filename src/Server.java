@@ -26,8 +26,7 @@ public class Server implements Runnable {
     System.out.println("Cliente conectado: " + client.getInetAddress().getHostAddress());
 
     try (PrintWriter out = new PrintWriter(client.getOutputStream(), true);
-          BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))
-        ) {
+          BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()))) {
 
           sendMessageClient(out);
 
