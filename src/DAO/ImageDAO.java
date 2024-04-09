@@ -1,6 +1,14 @@
 package DAO;
 
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import javax.imageio.ImageIO;
+
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 
 import Connection.ConnectDB;
 import model.Image;
@@ -20,5 +28,23 @@ public class ImageDAO {
     } catch (Exception e) {
       e.printStackTrace();
     }
+  }
+
+  public BufferedImage downloadImage(String imageName) {
+    String sql = "SELECT img FROM images WHERE name_image = ?";
+
+    try (PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql)) {
+      preparedStatement.setString(1, imageName);
+      ResultSet resultSet = preparedStatement.executeQuery();
+
+      if (resultSet.next()) {
+        InputStream inputStream = resultSet.getBinaryStream("img");
+        return ImageIO.read(inputStream);
+      }
+    } catch (SQLException | IOException e) {
+      e.printStackTrace();
+    }
+
+    return null;
   }
 }
