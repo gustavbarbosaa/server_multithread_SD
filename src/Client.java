@@ -27,18 +27,38 @@ public class Client {
 
     switch (choice) {
       case "1 - Download":
-        System.out.println("download");
-        break;
+          System.out.println("Imagens disponíveis:");
+          while (!(msg = in.readLine()).equals("FIM")) {
+              System.out.println(msg);
+          }
+          System.out.print("Digite o nome da imagem a ser baixada: ");
+          String nameImage = scanner.nextLine();
+
+          out.println(nameImage);
+
+          downloadImageClient(socket, nameImage);
+          break;
       case "2 - Upload":
-        System.out.println("upload");
-        break;
+          System.out.print("Digite o nome da imagem a ser carregada: ");
+          String nameToUpload = scanner.nextLine();
+          uploadImageClient(socket, nameToUpload);
+          break;
       case "3 - Delete":
-        System.out.println("delete");
-        break;
+          System.out.println("Imagens disponíveis:");
+          while (!(msg = in.readLine()).equals("FIM")) {
+              System.out.println(msg);
+          }
+
+          System.out.print("Digite o nome da imagem a ser excluída: ");
+          String nameToDelete = scanner.nextLine();
+
+          out.println(nameToDelete);
+
+          deleteImageClient(socket, nameToDelete);
+          break;
       default:
-        System.out.println("opcao invalida");
-        break;
-    }
+          System.out.println("Opção inválida.");
+  }
 
     socket.close();
   }
