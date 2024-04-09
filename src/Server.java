@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
@@ -65,10 +66,18 @@ public class Server implements Runnable {
     out.println("FIM");
   }
 
+  private void sendImageNames(PrintWriter out) {
+    ImageDAO imageDAO = new ImageDAO();
+    ArrayList<String> imageNames = imageDAO.getAllImages();
+
+    for (String name : imageNames) {
+        out.println(name);
+    }
+    out.println("Escolha uma das opcoes acima ou digite o nome da imagem: ");
+    out.println("FIM");
+}
+
   private void verifyResponse(String msg, Socket client) {
-  
-  
-  
     switch (msg) {
       case "1 - Download":
         System.out.println("download");
