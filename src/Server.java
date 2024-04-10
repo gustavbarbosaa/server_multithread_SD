@@ -103,8 +103,9 @@ public class Server implements Runnable {
         try {
           sendImageNames(new PrintWriter(client.getOutputStream(), true));
           BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-          String imageName = in.readLine();
-          deleteServer(client, imageName);
+          String stringImageID = in.readLine();
+          int imageID = Integer.parseInt(stringImageID);
+          deleteServer(client, imageID);
           break;
         } catch (IOException e) {
             e.printStackTrace();
@@ -173,27 +174,34 @@ public class Server implements Runnable {
       String stringImageID = in.readLine();
       imageID = Integer.parseInt(stringImageID);
 
-      System.out.println("Nome da imagem recebido: " + imageID);
+      System.out.println("ID da imagem: " + imageID);
 
-      String imagePath = "C:\\Users\\NETLINE-DEV\\Documents\\pessoal\\server_multithread_SD\\" + imageName + ".png";
-      System.out.println("caminho da imagem: " + imagePath);
-      File imageFile = new File(imagePath);
+      File imageFile = null;
+      ImageDAO imageDAO = new ImageDAO();
+      Map<Integer, String> images = imageDAO.getAllImages();
+  
+      for (Map.Entry<Integer, String> entry : images.entrySet()) {
+        if (imageID == entry.getKey()) {
+          String imagePath = "C:\\Users\\gusta\\OneDrive\\Documentos\\pessoal\\DEV\\projeto_sistema_distribuidos\\server_multithread_SD\\src\\" + entry.getValue() + ".png";
+          imageFile = new File(imagePath);
+          System.out.println(imageFile.exists());
+        }
+      }
 
       if (imageFile.exists()) {
         boolean deleted = imageFile.delete();
         if (deleted) {
-            out.println("Imagem " + imageName + " deletada com sucesso.");
-            ImageDAO imageDAO = new ImageDAO();
-            if (imageDAO.deleteImage(imageName)) {
-                System.out.println("Imagem " + imageName + " deletada do banco de dados.");
+            out.println("Imagem de id " + imageID + " deletada com sucesso.");
+            if (imageDAO.deleteImage(imageID)) {
+                System.out.println("Imagem de id " + imageID + " deletada do banco de dados.");
             } else {
-                System.out.println("Erro ao deletar a imagem " + imageName + " do banco de dados.");
+                System.out.println("Erro ao deletar a imagem " + imageID + " do banco de dados.");
             }
         } else {
-            out.println("Falha ao deletar a imagem " + imageName + ".");
+            out.println("Falha ao deletar a imagem " + imageID + ".");
         }
       } else {
-        out.println("A imagem " + imageName + " não existe.");
+        out.println("A imagem " + imageID + " não existe.");
     }
     } catch (IOException e) {
       e.printStackTrace();

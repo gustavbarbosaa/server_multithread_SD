@@ -5,6 +5,8 @@ import java.util.*;
 
 import javax.imageio.ImageIO;
 
+import DAO.ImageDAO;
+
 public class Client {
   public static void main(String[] args) throws UnknownHostException, IOException {
     Socket socket = new Socket("localhost", 8080);
@@ -49,12 +51,13 @@ public class Client {
               System.out.println(msg);
           }
 
-          System.out.print("Digitee o ID da imagem a ser excluída: ");
-          String nameToDelete = scanner.nextLine();
+          System.out.print("Digite o ID da imagem a ser excluída: ");
+          String stringImageID = scanner.nextLine();
+          int imageID = Integer.parseInt(stringImageID);
 
-          out.println(nameToDelete);
+          out.println(imageID);
 
-          deleteImageClient(socket, nameToDelete);
+          deleteImageClient(socket, imageID);
           break;
       default:
           System.out.println("Opção inválida.");
@@ -98,7 +101,17 @@ public class Client {
             in.readFully(imageData);
 
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
-            File path = new File("imagem_" + System.currentTimeMillis() + ".png");
+
+            File path = null;
+            ImageDAO imageDAO = new ImageDAO();
+            Map<Integer, String> images = imageDAO.getAllImages();
+      
+            for (Map.Entry<Integer, String> entry : images.entrySet()) {
+              if (idImage == entry.getKey()) {
+                path = new File(entry.getValue());
+              }
+            }
+
             ImageIO.write(image, "png", path);
             System.out.println("Imagem salva como: " + path.getAbsolutePath());
         } else {
@@ -109,13 +122,12 @@ public class Client {
     }
   }
 
-  public static void deleteImageClient(Socket socket, String nameImage) {
+  public static void deleteImageClient(Socket socket, int idImage) {
     try {
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-        out.println(nameImage); 
+        out.println(idImage); 
 
         String response = in.readLine();
         System.out.println(response);
