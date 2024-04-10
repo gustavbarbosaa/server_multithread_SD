@@ -31,12 +31,12 @@ public class Client {
           while (!(msg = in.readLine()).equals("FIM")) {
               System.out.println(msg);
           }
-          System.out.print("Digite o nome da imagem a ser baixada: ");
-          String nameImage = scanner.nextLine();
+          System.out.print("Digite o ID da imagem a ser baixada: ");
+          int idImage = scanner.nextInt();
 
-          out.println(nameImage);
+          out.println(idImage);
 
-          downloadImageClient(socket, nameImage);
+          downloadImageClient(socket, idImage);
           break;
       case "2 - Upload":
           System.out.print("Digite o nome da imagem a ser carregada: ");
@@ -49,7 +49,7 @@ public class Client {
               System.out.println(msg);
           }
 
-          System.out.print("Digite o nome da imagem a ser excluída: ");
+          System.out.print("Digitee o ID da imagem a ser excluída: ");
           String nameToDelete = scanner.nextLine();
 
           out.println(nameToDelete);
@@ -59,7 +59,6 @@ public class Client {
       default:
           System.out.println("Opção inválida.");
   }
-
     socket.close();
   }
 
@@ -80,17 +79,15 @@ public class Client {
 
         OutputStream outputStream = socket.getOutputStream();
         outputStream.write(arrayImage.toByteArray());
-
-        System.out.println("Imagem enviada para o servidor com o nome: " + nameImage);
     } catch (IOException e) {
         e.printStackTrace();
     }
   }
 
-  public static void downloadImageClient(Socket socket, String nameImage) {
+  public static void downloadImageClient(Socket socket, int idImage) {
     try {
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-        out.println(nameImage);
+        out.println(idImage);
 
         DataInputStream in = new DataInputStream(socket.getInputStream());
 
@@ -101,7 +98,7 @@ public class Client {
             in.readFully(imageData);
 
             BufferedImage image = ImageIO.read(new ByteArrayInputStream(imageData));
-            File path = new File(nameImage + ".png");
+            File path = new File("imagem_" + System.currentTimeMillis() + ".png");
             ImageIO.write(image, "png", path);
             System.out.println("Imagem salva como: " + path.getAbsolutePath());
         } else {

@@ -1,6 +1,6 @@
 import java.io.*;
 import java.net.*;
-import java.util.ArrayList;
+import java.util.Map;
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 
@@ -68,11 +68,14 @@ public class Server implements Runnable {
 
   private void sendImageNames(PrintWriter out) {
     ImageDAO imageDAO = new ImageDAO();
-    ArrayList<String> imageNames = imageDAO.getAllImages();
+    Map<Integer, String> images = imageDAO.getAllImages();
 
-    for (String name : imageNames) {
-        out.println(name);
+    for (Map.Entry<Integer, String> entry : images.entrySet()) {
+      Integer key = entry.getKey();
+      String value = entry.getValue();
+      out.println("ID: " + key + ", NOME: " + value);
     }
+    
     out.println("Escolha uma das opcoes acima ou digite o nome da imagem: ");
     out.println("FIM");
 }
@@ -84,9 +87,13 @@ public class Server implements Runnable {
             sendImageNames(new PrintWriter(client.getOutputStream(), true));
 
             BufferedReader in = new BufferedReader(new InputStreamReader(client.getInputStream()));
-            String imageName = in.readLine();
+            String stringImageID = in.readLine();
 
-            downloadServer(client, imageName);
+            int imageId = Integer.parseInt(stringImageID);
+
+            System.out.println(imageId);
+
+            downloadServer(client, imageId);
             break;
         } catch (IOException e) {
             e.printStackTrace();
@@ -124,14 +131,10 @@ public class Server implements Runnable {
           byte[] imageData = byteArrayOutputStream.toByteArray();
 
           ImageDAO imageDAO = new ImageDAO();
-          imageDAO.uploadImage(new Image(imageName, imageData));
-
-          File path = new File("imagem_" + System.currentTimeMillis() + ".png");
-          ImageIO.write(image, "png", path);
-          System.out.println("Imagem salva como: " + path.getAbsolutePath());
-      } else {
+          imageDAO.uploadImage(new Image("imagem_" + System.currentTimeMillis(), imageData));
+        } else {
           System.out.println("Imagem recebida é nula ou inválida.");
-      }
+        }
       } else {
         System.out.println("Nome da imagem recebido é nulo ou vazio!");
       }
@@ -140,12 +143,12 @@ public class Server implements Runnable {
     }
   }
 
-  private void downloadServer(Socket socket, String imageName) {
+  private void downloadServer(Socket socket, int imageId) {
     try {
       DataOutputStream out = new DataOutputStream(socket.getOutputStream());
 
       ImageDAO imageDAO = new ImageDAO();
-      BufferedImage image = imageDAO.downloadImage(imageName);
+      BufferedImage image = imageDAO.downloadImage(imageId);
 
       if (image != null) {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -155,7 +158,7 @@ public class Server implements Runnable {
         out.writeInt(imageData.length);
         out.write(imageData);
         
-        System.out.println("Imagem enviada para o cliente: " + imageName);
+        System.out.println("Imagem enviada para o cliente: " + imageId);
       } else {
         out.writeInt(-1);
         System.out.println("Imagem não encontrada.");
@@ -167,13 +170,12 @@ public class Server implements Runnable {
 
   private void deleteServer(Socket socket, String imageName) {
     try {
-      System.out.println("entrei no delete");
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
       imageName = in.readLine();
       System.out.println("Nome da imagem recebido: " + imageName);
 
-      String imagePath = "C:\\Users\\NETLINE-DEV\\Documents\\pessoal\\projetos\\app_multithread\\" + imageName + ".png";
+      String imagePath = "C:\\Users\\NETLINE-DEV\\Documents\\pessoal\\server_multithread_SD\\" + imageName + ".png";
       System.out.println("caminho da imagem: " + imagePath);
       File imageFile = new File(imagePath);
 

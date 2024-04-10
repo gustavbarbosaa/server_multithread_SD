@@ -4,6 +4,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.imageio.ImageIO;
 
@@ -31,11 +33,11 @@ public class ImageDAO {
     }
   }
 
-  public BufferedImage downloadImage(String imageName) {
-    String sql = "SELECT img FROM images WHERE name_image = ?";
+  public BufferedImage downloadImage(int imageId) {
+    String sql = "SELECT img FROM images WHERE id_image = ?";
 
     try (PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql)) {
-      preparedStatement.setString(1, imageName);
+      preparedStatement.setInt(1, imageId);
       ResultSet resultSet = preparedStatement.executeQuery();
 
       if (resultSet.next()) {
@@ -62,19 +64,24 @@ public class ImageDAO {
     }
   }
 
-  public ArrayList<String> getAllImages() {
+  public  Map<Integer, String> getAllImages() {
+
+    Map<Integer, String> imageMap = new HashMap<Integer, String>();
+
     ArrayList<String> imageNames = new ArrayList<>();
-    String sql = "SELECT name_image FROM images";
+    String sql = "SELECT id_image, name_image FROM images";
 
     try(PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql)) {
       ResultSet resultSet = preparedStatement.executeQuery();
       while (resultSet.next()) {
+          int id = resultSet.getInt("id_image");
           String name = resultSet.getString("name_image");
+          imageMap.put(id, name);
           imageNames.add(name);
       }
     } catch (SQLException e) {
       e.printStackTrace();
     }
-    return imageNames;
+    return imageMap;
   }
 }

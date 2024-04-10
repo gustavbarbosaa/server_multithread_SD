@@ -3,7 +3,7 @@ package Connection;
 import java.sql.*;
 
 public class ConnectDB {
-  private static final String url = "jdbc:mysql://172.18.0.2:3306/images";
+  private static final String url = "jdbc:mysql://localhost:3306/images";
   private static final String user = "root";
   private static final String password = "Guga1957!";
 
