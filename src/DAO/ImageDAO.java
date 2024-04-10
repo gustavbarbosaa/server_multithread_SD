@@ -51,11 +51,11 @@ public class ImageDAO {
     return null;
   }
 
-  public boolean deleteImage(String imageName) {
-    String sql = "DELETE FROM images WHERE name_image = ?";
+  public boolean deleteImage(int imageID) {
+    String sql = "DELETE FROM images WHERE id_image = ?";
 
     try (PreparedStatement preparedStatement = ConnectDB.getConnection().prepareStatement(sql)) {
-      preparedStatement.setString(1, imageName);
+      preparedStatement.setInt(1, imageID);
       int rowsAffected = preparedStatement.executeUpdate();
       return rowsAffected > 0;
     } catch (SQLException e) {
@@ -64,7 +64,7 @@ public class ImageDAO {
     }
   }
 
-  public  Map<Integer, String> getAllImages() {
+  public Map<Integer, String> getAllImages() {
 
     Map<Integer, String> imageMap = new HashMap<Integer, String>();
 

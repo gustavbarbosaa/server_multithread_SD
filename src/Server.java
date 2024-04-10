@@ -75,8 +75,6 @@ public class Server implements Runnable {
       String value = entry.getValue();
       out.println("ID: " + key + ", NOME: " + value);
     }
-    
-    out.println("Escolha uma das opcoes acima ou digite o nome da imagem: ");
     out.println("FIM");
 }
 
@@ -168,12 +166,14 @@ public class Server implements Runnable {
     }
   }
 
-  private void deleteServer(Socket socket, String imageName) {
+  private void deleteServer(Socket socket, int imageID) {
     try {
       BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
       PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
-      imageName = in.readLine();
-      System.out.println("Nome da imagem recebido: " + imageName);
+      String stringImageID = in.readLine();
+      imageID = Integer.parseInt(stringImageID);
+
+      System.out.println("Nome da imagem recebido: " + imageID);
 
       String imagePath = "C:\\Users\\NETLINE-DEV\\Documents\\pessoal\\server_multithread_SD\\" + imageName + ".png";
       System.out.println("caminho da imagem: " + imagePath);
