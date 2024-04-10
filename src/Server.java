@@ -177,16 +177,18 @@ public class Server implements Runnable {
       System.out.println("ID da imagem: " + imageID);
 
       File imageFile = null;
+      String imagePath = "";
       ImageDAO imageDAO = new ImageDAO();
       Map<Integer, String> images = imageDAO.getAllImages();
   
       for (Map.Entry<Integer, String> entry : images.entrySet()) {
         if (imageID == entry.getKey()) {
-          String imagePath = "C:\\Users\\gusta\\OneDrive\\Documentos\\pessoal\\DEV\\projeto_sistema_distribuidos\\server_multithread_SD\\src\\" + entry.getValue() + ".png";
-          imageFile = new File(imagePath);
-          System.out.println(imageFile.exists());
+          imagePath = "src\\assets\\" + entry.getValue() + ".png";
         }
       }
+      System.out.println(imagePath);
+      imageFile = new File(imagePath);
+      System.out.println("Criado o imageFile");
 
       if (imageFile.exists()) {
         boolean deleted = imageFile.delete();

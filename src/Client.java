@@ -53,11 +53,10 @@ public class Client {
 
           System.out.print("Digite o ID da imagem a ser excluída: ");
           String stringImageID = scanner.nextLine();
-          int imageID = Integer.parseInt(stringImageID);
 
-          out.println(imageID);
+          out.println(stringImageID);
 
-          deleteImageClient(socket, imageID);
+          deleteImageClient(socket, stringImageID);
           break;
       default:
           System.out.println("Opção inválida.");
@@ -76,7 +75,7 @@ public class Client {
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         out.println(nameImage);
 
-        BufferedImage image = ImageIO.read(new File("src/" + nameImage + ".png"));
+        BufferedImage image = ImageIO.read(new File("src/assets/" + nameImage + ".png"));
         ByteArrayOutputStream arrayImage = new ByteArrayOutputStream();
         ImageIO.write(image, "png", arrayImage);
 
@@ -108,7 +107,8 @@ public class Client {
       
             for (Map.Entry<Integer, String> entry : images.entrySet()) {
               if (idImage == entry.getKey()) {
-                path = new File(entry.getValue());
+                path = new File("src\\assets\\" + entry.getValue() + ".png");
+                System.out.println(path);
               }
             }
 
@@ -122,7 +122,7 @@ public class Client {
     }
   }
 
-  public static void deleteImageClient(Socket socket, int idImage) {
+  public static void deleteImageClient(Socket socket, String idImage) {
     try {
         PrintWriter out = new PrintWriter(socket.getOutputStream(), true);
         BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -134,5 +134,5 @@ public class Client {
     } catch (IOException e) {
         e.printStackTrace();
     }
-}
+  }
 }
